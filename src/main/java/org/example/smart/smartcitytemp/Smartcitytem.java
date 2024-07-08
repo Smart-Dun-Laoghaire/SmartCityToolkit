@@ -11,6 +11,11 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.common.MinecraftForge;
 import org.slf4j.Logger;
+import net.minecraft.world.item.CreativeModeTabs;
+
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+
+
 
 
 
@@ -60,5 +65,13 @@ public class Smartcitytem {
     private void setRainyWeather() {
         Minecraft.getInstance().level.setRainLevel(1);
         Minecraft.getInstance().level.setThunderLevel(0.2F);
+    }
+
+    @SubscribeEvent
+    public void onBuildCreativeModeTabContents(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTab() == CreativeModeTabs.getDefaultTab()) {
+            event.accept(ModItems.TEMPERATURE_SENSOR.get());
+            event.accept(ModItems.AIR_QUALITY_SENSOR.get());
+        }
     }
 }

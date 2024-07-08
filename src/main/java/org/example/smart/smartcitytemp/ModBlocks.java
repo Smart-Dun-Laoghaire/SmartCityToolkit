@@ -11,10 +11,10 @@ public class ModBlocks {
 
     // Example block with custom properties
     public static final RegistryObject<Block> TEMPERATURE_SENSOR = BLOCKS.register("temperature_sensor",
-            () -> new Block(Block.Properties.copy(Blocks.IRON_BLOCK).strength(1.5f)));
+            () -> new Block(Blocks.IRON_BLOCK.properties()));
 
     // Example block with custom properties
     public static final RegistryObject<Block> AIR_QUALITY_SENSOR = BLOCKS.register("air_quality_sensor",
-            () -> new Block(Block.Properties.copy(Blocks.IRON_BLOCK).strength(1.5f)));
+            () -> new Block(Blocks.IRON_BLOCK.properties()));
 
 }
