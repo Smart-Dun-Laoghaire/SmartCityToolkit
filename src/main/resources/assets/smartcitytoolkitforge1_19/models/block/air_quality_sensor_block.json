@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "smartcitytoolkitforge1_19:block/air_quality_sensor_block"
+  }
+}
