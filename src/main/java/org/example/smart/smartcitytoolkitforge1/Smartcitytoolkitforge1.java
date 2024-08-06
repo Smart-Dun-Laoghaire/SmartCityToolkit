@@ -111,7 +111,6 @@ public class Smartcitytoolkitforge1 {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
-        // Common setup logic, if any
     }
 
     @SubscribeEvent
