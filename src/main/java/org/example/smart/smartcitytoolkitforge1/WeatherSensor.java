@@ -28,7 +28,7 @@ public class WeatherSensor extends Sensor {
     private static final String API_URL = "https://api.openweathermap.org/data/2.5/weather";
     private static final String API_KEY = "db1a188a4c32408efcaf6ba4d2a4b458"; // Replace with your API key
 
-    private String currentWeather = "Unknown";
+    private String currentWeather = "broken clouds";
     private int ticksSinceLastUpdate = 0;
     private static final int UPDATE_INTERVAL = 1200; // Update interval in ticks
 
