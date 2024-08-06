@@ -1,1 +1,1 @@
-rm
+This project aims to bridge the gap between gaming and smart city planning by developing a Minecraft mod that incorporates real-world sensor data. The mod will feature a variety of sensors to monitor environmental and urban parameters, offering interactive configurations and visual appeal aligned with Smart Dun Laoghaire and SCORE projects. The ultimate goal is to provide a tool for users to create and manage digital twins of smart cities globally.
