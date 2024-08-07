@@ -5,7 +5,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -17,6 +19,7 @@ public class WeatherSensorDetailScreen extends Screen {
     private final WeatherSensor weatherSensor;
     private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Smartcitytoolkitforge1.MODID, "textures/gui/weather_sensor_detail.png");
     private String weatherData = "Loading...";
+    private boolean messageSent = false;
 
     public WeatherSensorDetailScreen(WeatherSensor weatherSensor, Component title) {
         super(title);
@@ -26,8 +29,21 @@ public class WeatherSensorDetailScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        // Fetch sensor data asynchronously
+        if (!messageSent) {
+            sendClickableMessage();
+            messageSent = true;
+        }
         fetchSensorData();
+    }
+
+    private void sendClickableMessage() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            Component message = Component.literal("Click on the link for more info!")
+                    .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://api.openweathermap.org/data/2.5/weather?q=Dun%20Laoghaire&APPID=db1a188a4c32408efcaf6ba4d2a4b458")));
+
+            minecraft.player.sendSystemMessage(message);
+        }
     }
 
     private void fetchSensorData() {

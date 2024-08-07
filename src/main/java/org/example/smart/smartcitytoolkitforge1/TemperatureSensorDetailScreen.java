@@ -3,9 +3,12 @@ package org.example.smart.smartcitytoolkitforge1;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -46,6 +49,17 @@ public class TemperatureSensorDetailScreen extends Screen {
     protected void init() {
         super.init();
         fetchSensorData();
+        sendClickableMessage();
+    }
+
+    private void sendClickableMessage() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            Component message = Component.literal("Click on the link for more info!")
+                    .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations/?device_id=16759")));
+
+            minecraft.player.sendSystemMessage(message);
+        }
     }
 
     @Override

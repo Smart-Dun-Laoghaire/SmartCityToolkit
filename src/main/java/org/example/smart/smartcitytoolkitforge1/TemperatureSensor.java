@@ -27,7 +27,7 @@ public class TemperatureSensor extends Sensor {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final String API_URL = "https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations";
     private static final String API_KEY = "16759";
-    private String currentTemperature = "22.11";
+    private String currentTemperature = "21.91";
 
     public TemperatureSensor(BlockPos location) {
         super(BlockBehaviour.Properties.of(Material.METAL)

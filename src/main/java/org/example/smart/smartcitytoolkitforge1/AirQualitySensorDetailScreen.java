@@ -2,9 +2,12 @@ package org.example.smart.smartcitytoolkitforge1;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 
 import java.io.IOException;
@@ -27,6 +30,7 @@ public class AirQualitySensorDetailScreen extends Screen {
     @Override
     protected void init() {
         super.init();
+        sendClickableMessage();
 
         scheduler = Executors.newScheduledThreadPool(1);
         scheduler.scheduleAtFixedRate(() -> {
@@ -36,6 +40,15 @@ public class AirQualitySensorDetailScreen extends Screen {
                 e.printStackTrace();
             }
         }, 0, 10, TimeUnit.SECONDS);
+    }
+    private void sendClickableMessage() {
+        Minecraft minecraft = Minecraft.getInstance();
+        if (minecraft.player != null) {
+            Component message = Component.literal("Click on the link for more info!")
+                    .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations/?device_id=16759")));
+
+            minecraft.player.sendSystemMessage(message);
+        }
     }
 
     private void fetchSensorData() throws IOException, InterruptedException {

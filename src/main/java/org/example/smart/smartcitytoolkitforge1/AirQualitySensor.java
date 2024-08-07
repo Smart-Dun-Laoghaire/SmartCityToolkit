@@ -49,11 +49,11 @@ public class AirQualitySensor extends Sensor {
     private static final String API_KEY = "16759";
     private static final Logger LOGGER = Logger.getLogger("MyMod");
 
-    private int currentPM2 = 4;
-    private int currentPM10 = 4;
-    private int currentPM1 = 2;
-    private int currentecO2 = 1299;
-    private int currentTVOC = 136;
+    private int currentPM2 = 11;
+    private int currentPM10 = 11;
+    private int currentPM1 = 7;
+    private int currentecO2 = 1274;
+    private int currentTVOC = 133;
 
 
     public AirQualitySensor(BlockPos location) {
