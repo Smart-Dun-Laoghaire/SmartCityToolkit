@@ -2,7 +2,7 @@ package org.example.smart.smartcitytoolkitforge1;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -41,7 +41,7 @@ public class SensorDataAccessObject {
                         sensor = new TemperatureSensor(location);
                         break;
                     case "WeatherSensor":
-                        sensor = new WeatherSensor(BlockBehaviour.Properties.of(Material.METAL), location);
+                        sensor = new WeatherSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL), location);
                         break;
                     case "AirQualitySensor":
                         sensor = new AirQualitySensor(location);

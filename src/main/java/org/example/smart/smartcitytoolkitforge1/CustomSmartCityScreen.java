@@ -13,14 +13,17 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+
+import java.awt.*;
 
 import static org.example.smart.smartcitytoolkitforge1.Smartcitytoolkitforge1.AIR_QUALITY_SENSOR_BLOCK;
 
 public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCityContainer> {
 
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation("smartcitytoolkitforge1_19", "textures/gui/custom_smartcity_block.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("smartcitytoolkitforge1_19", "textures/gui/custom_smartcity_block.png");
 
     private final WeatherSensor weatherSensor;
     private final TemperatureSensor temperatureSensor;
@@ -29,7 +32,8 @@ public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCi
     public CustomSmartCityScreen(CustomSmartCityContainer container, Inventory inv, Component title) {
         super(container, inv, Component.literal(""));
 
-        BlockBehaviour.Properties sensorProperties = BlockBehaviour.Properties.of(Material.METAL)
+        BlockBehaviour.Properties sensorProperties = BlockBehaviour.Properties.of()
+                .mapColor(MapColor.METAL)
                 .strength(1.5f)
                 .explosionResistance(6.0f)
                 .sound(SoundType.METAL);
@@ -47,9 +51,23 @@ public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCi
         int startX = (this.width - buttonWidth) / 2;
         int startY = (this.height - buttonHeight * 3) / 2; // Adjust Y position based on number of buttons
 
-        this.addRenderableWidget(new Button(startX, startY, buttonWidth, buttonHeight, Component.literal("Weather Sensor"), button -> openSensorScreen("weather", weatherSensor)));
-        this.addRenderableWidget(new Button(startX, startY + buttonHeight, buttonWidth, buttonHeight, Component.literal("Temperature Sensor"), button -> openSensorScreen("temperature", temperatureSensor)));
-        this.addRenderableWidget(new Button(startX, startY + 2 * buttonHeight, buttonWidth, buttonHeight, Component.literal("Air Quality Sensor"), button -> openSensorScreen("air_quality", airQualitySensor)));
+        this.addRenderableWidget(new Button.Builder(Component.translatable("Weather Sensor"), button -> openSensorScreen("weather", weatherSensor))
+                .pos(startX, startY + buttonHeight - 30)
+                .size(buttonWidth, buttonHeight)
+                .createNarration(button -> Component.literal("Click to open Weather Sensor"))
+                .build());
+
+        this.addRenderableWidget(new Button.Builder(Component.translatable("Temperature Sensor"), button -> openSensorScreen("temperature", temperatureSensor))
+                .pos(startX, startY + buttonHeight)
+                .size(buttonWidth, buttonHeight)
+                .createNarration(button -> Component.literal("Click to open Temperature Sensor"))
+                .build());
+
+        this.addRenderableWidget(new Button.Builder(Component.translatable("Air Quality Sensor"),button -> openSensorScreen("air_quality", airQualitySensor))
+                .pos(startX, startY + buttonHeight + 30)
+                .size(buttonWidth, buttonHeight)
+                .createNarration(button -> Component.literal("Click to open Air Quality Sensor"))
+                .build());
     }
 
     private void openSensorScreen(String sensorType, Sensor sensor) {
@@ -70,8 +88,8 @@ public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCi
                 minecraft.setScreen(new AirQualitySensorDetailScreen((AirQualitySensor) sensor, Component.literal("Air Quality Sensor Details")));
 
                 // Add the Air Quality Sensor block to the player's inventory
-                ItemStack itemStack = new ItemStack(AIR_QUALITY_SENSOR_BLOCK.get().asItem());
-                minecraft.player.getInventory().add(itemStack);
+                // ItemStack itemStack = new ItemStack(AIR_QUALITY_SENSOR_BLOCK.get().asItem());
+                // minecraft.player.getInventory().add(itemStack);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown sensor type: " + sensorType);
@@ -79,7 +97,7 @@ public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCi
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY) {
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);
 
 
@@ -93,10 +111,10 @@ public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCi
         int x = (this.width - scaledWidth) / 2;
         int y = (this.height - scaledHeight) / 2;
 
-        this.blit(poseStack, x, y, 0, 0, scaledWidth, scaledHeight);
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, scaledWidth, scaledHeight);
     }
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {
 
        // this.font.draw(poseStack, "Smart City Toolkit", 8, 6, 0xFFFFFF); // Adjust coordinates and color as needed
     }

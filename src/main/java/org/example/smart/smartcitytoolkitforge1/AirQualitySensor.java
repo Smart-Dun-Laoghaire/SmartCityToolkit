@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.TickEvent;
 import net.minecraft.server.level.ServerPlayer;
@@ -57,7 +57,8 @@ public class AirQualitySensor extends Sensor {
 
 
     public AirQualitySensor(BlockPos location) {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
                         .strength(1.5f)
                         .explosionResistance(6.0f)
                         .sound(SoundType.METAL),
@@ -109,7 +110,7 @@ public class AirQualitySensor extends Sensor {
 
     @Override
     public void update(Level world, BlockPos pos) throws IOException, InterruptedException {
-        if (!world.isClientSide) {
+        /*if (!world.isClientSide()) {
             String url = API_URL + "/?device_id=" + API_KEY + "&limit=15&offset=100";
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -157,7 +158,7 @@ public class AirQualitySensor extends Sensor {
             BlockState currentState = world.getBlockState(pos);
             BlockState newState = currentState.setValue(PM2_PROPERTY, this.currentPM2).setValue(PM10_PROPERTY, this.currentPM10);
             serverLevel.setBlock(pos, newState, 3);
-        }
+        }*/
     }
 
     public int getCurrentPM2() {

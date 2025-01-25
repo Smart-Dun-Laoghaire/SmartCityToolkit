@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,7 +30,8 @@ public class TemperatureSensor extends Sensor {
     private String currentTemperature = "21.91";
 
     public TemperatureSensor(BlockPos location) {
-        super(BlockBehaviour.Properties.of(Material.METAL)
+        super(BlockBehaviour.Properties.of()
+                        .mapColor(MapColor.METAL)
                         .strength(1.5f)
                         .explosionResistance(6.0f)
                         .sound(SoundType.METAL),
@@ -60,7 +61,7 @@ public class TemperatureSensor extends Sensor {
 
     @Override
     public void update(Level world, BlockPos pos) throws IOException, InterruptedException {
-        if (!world.isClientSide) {
+        /*if (!world.isClientSide()) {
             String url = API_URL + "/?device_id=" + API_KEY + "&limit=15&offset=100";
             HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
@@ -72,7 +73,7 @@ public class TemperatureSensor extends Sensor {
                 JsonObject jsonObject = JsonParser.parseString(responseBody).getAsJsonObject();
                 JsonArray resultsArray = jsonObject.getAsJsonArray("results");
 
-                if (resultsArray != null && resultsArray.size() > 0) {
+                if (resultsArray != null && !resultsArray.isEmpty()) {
                     JsonObject firstResult = resultsArray.get(0).getAsJsonObject();
                     if (firstResult.has("value")) {
                         double temperature = firstResult.get("value").getAsDouble();
@@ -87,7 +88,7 @@ public class TemperatureSensor extends Sensor {
                 System.err.println("Error parsing JSON response: " + e.getMessage());
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 
     public String getCurrentTemperature() {

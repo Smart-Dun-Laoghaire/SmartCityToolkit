@@ -15,11 +15,11 @@ license="${mod_license}"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="smartcitytoolkitforge1_19" #mandatory
+modId="${mod_id}" #mandatory
 # The version number of the mod
-version="50.1" #mandatory
+version="${mod_version}" #mandatory
 # A display name for the mod
-displayName="Smart City Toolkit" #mandatory
+displayName="${mod_name}" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://docs.minecraftforge.net/en/latest/misc/updatechecker/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -37,27 +37,27 @@ authors="${mod_authors}" #optional
 # NONE means that no display test is set on your mod. You need to do this yourself, see IExtensionPoint.DisplayTest for more information. You can define any scheme you wish with this value.
 # IMPORTANT NOTE: this is NOT an instruction as to which environments (CLIENT or DEDICATED SERVER) your mod loads on. Your mod should load (and maybe do nothing!) whereever it finds itself.
 #displayTest="MATCH_VERSION" # MATCH_VERSION is the default if nothing is specified (#optional)
-
 # The description text for the mod (multi line!) (#mandatory)
 description='''${mod_description}'''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
-[[dependencies."smartcitytoolkitforge1_19"]] #optional
-   # the modid of the dependency
-   modId="smartcitytoolkitforge1_19" #mandatory
-   # Does this dependency have to exist - if not, ordering below must be specified
-   mandatory=true #mandatory
-   # The version range of the dependency
-   versionRange= "[50.1,)" #mandatory
-   # An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
-   # BEFORE - This mod is loaded BEFORE the dependency
-   # AFTER - This mod is loaded AFTER the dependency
-   ordering="NONE"
-   # Side this dependency is applied on - BOTH, CLIENT, or SERVER
-   side="BOTH"# Here's another dependency
-[[dependencies."smartcitytoolkitforge1_19"]]
-   modId="smartcitytoolkitforge1_19"
-   mandatory=true
-   # This version range declares a minimum of the current minecraft version up to but not including the next major version
-   versionRange="[1.18.6,)"
-   ordering="NONE"
-   side="BOTH"
+[[dependencies.smartcitytoolkitforge1_21]] #optional
+# the modid of the dependency
+modId="forge" #mandatory
+# Does this dependency have to exist - if not, ordering below must be specified
+mandatory=true #mandatory
+# The version range of the dependency
+versionRange="${forge_version_range}" #mandatory
+# An ordering relationship for the dependency - BEFORE or AFTER required if the dependency is not mandatory
+# BEFORE - This mod is loaded BEFORE the dependency
+# AFTER - This mod is loaded AFTER the dependency
+ordering="NONE"
+# Side this dependency is applied on - BOTH, CLIENT, or SERVER
+side="BOTH"
+# Here's another dependency
+[[dependencies.smartcitytoolkitforge1_21]]
+modId="minecraft"
+mandatory=true
+# This version range declares a minimum of the current minecraft version up to but not including the next major version
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"

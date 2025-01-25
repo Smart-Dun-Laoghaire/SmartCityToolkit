@@ -4,6 +4,9 @@ import com.mojang.logging.LogUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -12,9 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.extensions.IForgeMenuType;
@@ -29,13 +32,14 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
+import net.minecraft.world.item.CreativeModeTabs;
 
 import java.io.IOException;
 
 @Mod(Smartcitytoolkitforge1.MODID)
 public class Smartcitytoolkitforge1 {
 
-    public static final String MODID = "smartcitytoolkitforge1_19";
+    public static final String MODID = "smartcitytoolkitforge1_21";
     public static final DeferredRegister<MenuType<?>> CONTAINERS = DeferredRegister.create(ForgeRegistries.MENU_TYPES, MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
@@ -52,7 +56,11 @@ public class Smartcitytoolkitforge1 {
     public static final RegistryObject<Block> CUSTOM_SMARTCITY_BLOCK = BLOCKS.register("custom_smartcity_block",
             () -> {
                 try {
-                    return new CustomSmartCityBlock(BlockBehaviour.Properties.of(Material.STONE), new TemperatureSensor(new BlockPos(0, 0, 0)));
+                    return new CustomSmartCityBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BRICKS)
+                                                    .mapColor(MapColor.STONE)
+                                                    .strength(1.5f, 6.0f)
+                                                    .requiresCorrectToolForDrops(),
+                                                    new TemperatureSensor(new BlockPos(0, 0, 0)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
@@ -65,21 +73,30 @@ public class Smartcitytoolkitforge1 {
     public static final RegistryObject<Block> AIR_QUALITY_SENSOR_BLOCK = BLOCKS.register("air_quality_sensor_block",
             () -> {
                 try {
-                    return new CustomSmartCityBlock(BlockBehaviour.Properties.of(Material.STONE), new AirQualitySensor(new BlockPos(0, 0, 0)));
+                    return new CustomSmartCityBlock(BlockBehaviour.Properties.of()
+                            .mapColor(MapColor.STONE)
+                            .strength(1.5f, 6.0f)
+                            .requiresCorrectToolForDrops(),
+                            new AirQualitySensor(new BlockPos(0, 0, 0)));
                 } catch (Exception e) {
                     throw new RuntimeException(e);
                 }
             });
 
-    public static final CreativeModeTab SMART_CITY_TAB = new CreativeModeTab("smartcitytoolkit_tab") {
-        @Override
-        public ItemStack makeIcon() {
-            return new ItemStack(CUSTOM_SMARTCITY_BLOCK_ITEM.get());
-        }
-    };
+
+    // Declare and create the creative tab
+    public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
+            DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
+    public static final RegistryObject<CreativeModeTab>  SMART_CITY_TAB = CREATIVE_MODE_TABS.register("smartcity_tab",
+                    () -> CreativeModeTab.builder()
+                    .icon(() -> new ItemStack(Smartcitytoolkitforge1.CUSTOM_SMARTCITY_BLOCK_ITEM.get()))
+                    .title(Component.translatable("itemGroup.smartcitytoolkit_tab"))
+                    .build());
 
     public static final RegistryObject<Item> CUSTOM_SMARTCITY_BLOCK_ITEM = ITEMS.register("custom_smartcity_block",
-            () -> new BlockItem(CUSTOM_SMARTCITY_BLOCK.get(), new Item.Properties().tab(SMART_CITY_TAB)));
+            () -> new BlockItem(Smartcitytoolkitforge1.CUSTOM_SMARTCITY_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> AIR_QUALITY_SENSOR_BLOCK_ITEM = ITEMS.register("air_quality_sensor_block",
+            () -> new BlockItem(Smartcitytoolkitforge1.AIR_QUALITY_SENSOR_BLOCK.get(), new Item.Properties()));
 
     //public static final RegistryObject<Item> CUSTOM_SMARTCITY_BLOCK_ITEM = ITEMS.register("custom_smartcity_block",
      //       () -> new Item(new Item.Properties().tab(SMART_CITY_TAB)));
@@ -101,12 +118,12 @@ public class Smartcitytoolkitforge1 {
         CONTAINERS.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
-
+        CREATIVE_MODE_TABS.register(modEventBus);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Initialize sensors
         this.temperatureSensor = new TemperatureSensor(new BlockPos(0, 0, 0));
-        this.weatherSensor = new WeatherSensor(BlockBehaviour.Properties.of(Material.METAL).strength(1.5f), new BlockPos(0, 0, 0));
+        this.weatherSensor = new WeatherSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), new BlockPos(0, 0, 0));
         this.airQualitySensor = new AirQualitySensor(new BlockPos(0, 0, 0));
     }
 

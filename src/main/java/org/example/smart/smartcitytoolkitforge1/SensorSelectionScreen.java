@@ -33,14 +33,12 @@ public class SensorSelectionScreen extends Screen {
 
         // Add buttons for each sensor type
         addButton(x, y, buttonWidth, buttonHeight, "Temperature Sensor", "Temperature");
-        y += 30;
-        addButton(x, y, buttonWidth, buttonHeight, "Air Quality Sensor", "Air Quality");
-        y += 30;
-        addButton(x, y, buttonWidth, buttonHeight, "Weather Sensor", "Weather");
+        addButton(x, y + 30, buttonWidth, buttonHeight, "Air Quality Sensor", "Air Quality");
+        addButton(x, y + 60, buttonWidth, buttonHeight, "Weather Sensor", "Weather");
     }
 
     private void addButton(int x, int y, int buttonWidth, int buttonHeight, String buttonText, String sensorType) {
-        Button button = new Button(x, y, buttonWidth, buttonHeight, Component.literal(buttonText), (btn) -> {
+        Button button = new Button.Builder(Component.literal(buttonText), (btn) -> {
             try {
                 if (sensorType == null || blockPos == null || world == null) {
                     throw new IllegalArgumentException("Invalid parameters for block creation.");
@@ -50,7 +48,7 @@ public class SensorSelectionScreen extends Screen {
                 e.printStackTrace();
                 Minecraft.getInstance().player.displayClientMessage(Component.literal("An error occurred: " + e.getMessage()), true);
             }
-        });
+        }).pos(x, y).size(buttonWidth, buttonHeight).build();
         this.addRenderableWidget(button);
     }
 

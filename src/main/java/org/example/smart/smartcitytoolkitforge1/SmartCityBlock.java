@@ -4,7 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.io.IOException;
@@ -51,13 +51,13 @@ public class SmartCityBlock {
         } else if (sensorType.equalsIgnoreCase("Air Quality")) {
             sensor = new AirQualitySensor(pos);
         } else if (sensorType.equalsIgnoreCase("Weather")) {
-            sensor = new WeatherSensor(BlockBehaviour.Properties.of(Material.METAL).strength(1.5f), pos);
+            sensor = new WeatherSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), pos);
         } else {
             throw new IllegalArgumentException("Unknown sensor type: " + sensorType);
         }
 
         CustomSmartCityBlock smartCityBlock = new CustomSmartCityBlock(
-                BlockBehaviour.Properties.of(Material.METAL).strength(1.5f), sensor
+                BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), sensor
         );
 
         BlockState blockState = smartCityBlock.defaultBlockState();

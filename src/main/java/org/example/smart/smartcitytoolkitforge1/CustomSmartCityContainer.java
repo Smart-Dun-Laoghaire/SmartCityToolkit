@@ -26,7 +26,7 @@ public class CustomSmartCityContainer extends AbstractContainerMenu {
     public CustomSmartCityContainer(int id, Inventory playerInventory, BlockPos pos) {
         super(Smartcitytoolkitforge1.CUSTOM_SMARTCITY_CONTAINER_TYPE.get(), id);
         this.pos = pos;
-        this.access = ContainerLevelAccess.create(playerInventory.player.level, pos);
+        this.access = ContainerLevelAccess.create(playerInventory.player.level(), pos);
 
     }
 

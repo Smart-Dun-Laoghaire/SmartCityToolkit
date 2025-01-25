@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
@@ -15,7 +16,7 @@ import java.io.IOException;
 
 public class TemperatureSensorDetailScreen extends Screen {
 
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Smartcitytoolkitforge1.MODID, "textures/gui/temperature_sensor_detail.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Smartcitytoolkitforge1.MODID, "textures/gui/temperature_sensor_detail.png");
     private final TemperatureSensor temperatureSensor;
     private String temperatureDisplay = "Fetching data..."; // Display string for temperature
 
@@ -56,15 +57,15 @@ public class TemperatureSensorDetailScreen extends Screen {
         Minecraft minecraft = Minecraft.getInstance();
         if (minecraft.player != null) {
             Component message = Component.literal("Click on the link for more info!")
-                    .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations/?device_id=16759")));
+                    .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "google.com"))); // https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations/?device_id=16759
 
             minecraft.player.sendSystemMessage(message);
         }
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);
 
         float scale = 0.3f;
@@ -76,15 +77,15 @@ public class TemperatureSensorDetailScreen extends Screen {
         // Calculate the position to center the scaled image
         int x = (this.width - scaledWidth) / 2;
         int y = (this.height - scaledHeight) / 2;
-
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         // Render the texture with the new dimensions
-        this.blit(poseStack, x, y, 0, 0, scaledWidth, scaledHeight);
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, scaledWidth, scaledHeight);
 
 
         // Debugging: Print the temperatureDisplay string
       //  this.font.draw(poseStack, "Temperature Data at Dún Laoghaire:", x , y + 10, 0xFFFFFF);
-        this.font.draw(poseStack, "Temperature: " + temperatureSensor.getCurrentTemperature() + "°C", x + 10, y + 70, 0xFFFFFF);
+        guiGraphics.drawString(this.font, "Temperature: " + temperatureSensor.getCurrentTemperature() + "°C", x + 10, y + 70, 0xFFFFFF);
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+
     }
 }

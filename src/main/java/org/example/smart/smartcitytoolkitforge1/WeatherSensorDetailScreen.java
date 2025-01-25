@@ -11,19 +11,21 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.client.gui.GuiGraphics;
 
 import static com.mojang.text2speech.Narrator.LOGGER;
 
 public class WeatherSensorDetailScreen extends Screen {
 
     private final WeatherSensor weatherSensor;
-    private static final ResourceLocation GUI_TEXTURE = new ResourceLocation(Smartcitytoolkitforge1.MODID, "textures/gui/weather_sensor_detail.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath(Smartcitytoolkitforge1.MODID, "textures/gui/weather_sensor_detail.png");
     private String weatherData = "Loading...";
     private boolean messageSent = false;
 
     public WeatherSensorDetailScreen(WeatherSensor weatherSensor, Component title) {
         super(title);
-        this.weatherSensor = weatherSensor != null ? weatherSensor : new WeatherSensor(BlockBehaviour.Properties.of(Blocks.STONE.defaultBlockState().getMaterial()), new BlockPos(0, 0, 0));
+        this.weatherSensor = weatherSensor != null ? weatherSensor : new WeatherSensor(BlockBehaviour.Properties.of().mapColor(MapColor.STONE), new BlockPos(0, 0, 0));
     }
 
     @Override
@@ -64,8 +66,8 @@ public class WeatherSensorDetailScreen extends Screen {
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
-        this.renderBackground(poseStack);
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTicks);
         RenderSystem.setShaderTexture(0, GUI_TEXTURE);
         float scale = 0.3f;
 
@@ -76,16 +78,16 @@ public class WeatherSensorDetailScreen extends Screen {
         // Calculate the position to center the scaled image
         int x = (this.width - scaledWidth) / 2;
         int y = (this.height - scaledHeight) / 2;
-
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         // Render the texture with the new dimensions
-        this.blit(poseStack, x, y, 0, 0, scaledWidth, scaledHeight);
+        guiGraphics.blit(GUI_TEXTURE, x, y, 0, 0, scaledWidth, scaledHeight);
 
 
         String weather = "Weather: " + weatherData;
         this.init();
 
-        this.font.draw(poseStack, weather, x + 10, y + 70, 0xFFFFFF);
+        guiGraphics.drawString(this.font, weather, x + 10, y + 70, 0xFFFFFF);
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+
     }
 }

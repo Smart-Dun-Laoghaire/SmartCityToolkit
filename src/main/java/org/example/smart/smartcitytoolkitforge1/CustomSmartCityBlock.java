@@ -12,13 +12,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.network.NetworkHooks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 
 public class CustomSmartCityBlock extends Block {
 
     private final Sensor linkedSensor;
 
-    public CustomSmartCityBlock(Properties properties, Sensor sensor) {
+    public CustomSmartCityBlock(BlockBehaviour.Properties properties, Sensor sensor) {
         super(properties);
         if (sensor == null) {
             throw new IllegalArgumentException("Sensor cannot be null");
@@ -30,7 +30,7 @@ public class CustomSmartCityBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide) {
 
             return InteractionResult.SUCCESS;
@@ -40,7 +40,7 @@ public class CustomSmartCityBlock extends Block {
         if (player instanceof ServerPlayer serverPlayer) {
          //   player.displayClientMessage(Component.literal("Block clicked"), true);
 
-            NetworkHooks.openScreen(serverPlayer, new SimpleMenuProvider(
+            serverPlayer.openMenu(new SimpleMenuProvider(
                     (id, inventory, buf) -> new CustomSmartCityContainer(id, inventory, pos),
                     Component.translatable("container.smartcitytoolkitforge1.custom_smartcity_container")
             ), pos);

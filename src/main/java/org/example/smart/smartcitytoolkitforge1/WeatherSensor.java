@@ -70,7 +70,7 @@ public class WeatherSensor extends Sensor {
 
     @Override
     public void update(Level world, BlockPos pos) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             CompletableFuture.runAsync(() -> {
                 try {
                     String city = "Dun%20Laoghaire";
