@@ -23,7 +23,7 @@ import static org.example.smart.smartcitytoolkitforge1.Smartcitytoolkitforge1.AI
 
 public class CustomSmartCityScreen extends AbstractContainerScreen<CustomSmartCityContainer> {
 
-    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("smartcitytoolkitforge1_19", "textures/gui/custom_smartcity_block.png");
+    private static final ResourceLocation GUI_TEXTURE = ResourceLocation.fromNamespaceAndPath("smartcitytoolkitforge1_21", "textures/gui/custom_smartcity_block.png");
 
     private final WeatherSensor weatherSensor;
     private final TemperatureSensor temperatureSensor;
