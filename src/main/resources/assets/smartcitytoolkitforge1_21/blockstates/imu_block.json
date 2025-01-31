@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "": { "model": "smartcitytoolkitforge1_21:block/imu_block" }
+  }
+}

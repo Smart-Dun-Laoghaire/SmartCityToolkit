@@ -33,6 +33,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.slf4j.Logger;
 import net.minecraft.world.item.CreativeModeTabs;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 
 import java.io.IOException;
 
@@ -44,6 +45,7 @@ public class Smartcitytoolkitforge1 {
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITIES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, MODID);
+
 
     private static final Logger LOGGER = LogUtils.getLogger();
 
@@ -83,6 +85,22 @@ public class Smartcitytoolkitforge1 {
                 }
             });
 
+    public static final RegistryObject<Block> IMU_BLOCK = BLOCKS.register("imu_block",
+            () -> {
+                try {
+                    return new IMUBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE_BRICKS)
+                            .mapColor(MapColor.STONE)
+                            .strength(1.5f, 6.0f)
+                            .requiresCorrectToolForDrops(),
+                            new IMUSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), new BlockPos(0, 0, 0)));
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+    public static final RegistryObject<BlockEntityType<IMUBlockEntity>> IMU_BLOCK_ENTITY_TYPE = BLOCK_ENTITIES.register("imu_block",
+            () -> BlockEntityType.Builder.of(IMUBlockEntity::new, IMU_BLOCK.get()).build(null));
+
 
     // Declare and create the creative tab
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS =
@@ -97,6 +115,8 @@ public class Smartcitytoolkitforge1 {
             () -> new BlockItem(Smartcitytoolkitforge1.CUSTOM_SMARTCITY_BLOCK.get(), new Item.Properties()));
     public static final RegistryObject<Item> AIR_QUALITY_SENSOR_BLOCK_ITEM = ITEMS.register("air_quality_sensor_block",
             () -> new BlockItem(Smartcitytoolkitforge1.AIR_QUALITY_SENSOR_BLOCK.get(), new Item.Properties()));
+    public static final RegistryObject<Item> IMU_BLOCK_ITEM = ITEMS.register("imu_block",
+            () -> new BlockItem(Smartcitytoolkitforge1.IMU_BLOCK.get(), new Item.Properties()));
 
     //public static final RegistryObject<Item> CUSTOM_SMARTCITY_BLOCK_ITEM = ITEMS.register("custom_smartcity_block",
      //       () -> new Item(new Item.Properties().tab(SMART_CITY_TAB)));
@@ -108,6 +128,7 @@ public class Smartcitytoolkitforge1 {
     private TemperatureSensor temperatureSensor;
     private WeatherSensor weatherSensor;
     private AirQualitySensor airQualitySensor;
+    private IMUSensor IMUSensor;
 
     public Smartcitytoolkitforge1() {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
@@ -116,18 +137,27 @@ public class Smartcitytoolkitforge1 {
         ITEMS.register(modEventBus);
         BLOCK_ENTITIES.register(modEventBus);
         CONTAINERS.register(modEventBus);
+        CREATIVE_MODE_TABS.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
-        CREATIVE_MODE_TABS.register(modEventBus);
+        modEventBus.addListener(this::clientSetup);
         MinecraftForge.EVENT_BUS.register(this);
 
         // Initialize sensors
         this.temperatureSensor = new TemperatureSensor(new BlockPos(0, 0, 0));
         this.weatherSensor = new WeatherSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), new BlockPos(0, 0, 0));
         this.airQualitySensor = new AirQualitySensor(new BlockPos(0, 0, 0));
+        this.IMUSensor = new IMUSensor(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.5f), new BlockPos(0, 0, 0));
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+    }
+
+    private void clientSetup(final FMLClientSetupEvent event) {
+        // Register BlockEntityRenderer on the client side
+        event.enqueueWork(() -> {
+            BlockEntityRenderers.register(IMU_BLOCK_ENTITY_TYPE.get(), IMUBlockEntityRender::new);
+        });
     }
 
     @SubscribeEvent
