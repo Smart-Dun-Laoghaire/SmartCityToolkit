@@ -26,6 +26,15 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
+
 public class IMUBlockEntity extends BlockEntity {
     private float rotationX = 0;
     private float rotationY = 0;
@@ -34,7 +43,11 @@ public class IMUBlockEntity extends BlockEntity {
     private float positionY = 0;
     private float positionZ = 0;
 
-   public IMUBlockEntity(BlockPos pos, BlockState state) {
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
+
+    public IMUBlockEntity(BlockPos pos, BlockState state) {
        super(Smartcitytoolkitforge1.IMU_BLOCK_ENTITY_TYPE.get(), pos, state);
        final Sensor linkedSensor;
    }
@@ -124,31 +137,94 @@ public class IMUBlockEntity extends BlockEntity {
     public float getPositionY() {
         return positionY;
     }
-
     public float getPositionZ() {
         return positionZ;
     }
-    /*
-    public void move() {
-           if (this.level instanceof ServerLevel serverLevel) {
-               Direction facing = Direction.NORTH; // Set default direction or get from some logic
-               BlockPos targetPos = this.worldPosition.relative(facing);
 
-               if (serverLevel.isEmptyBlock(targetPos)) {
-                   BlockState currentState = this.getBlockState();
 
-                   // Remove current block
-                   serverLevel.setBlock(this.worldPosition, Blocks.AIR.defaultBlockState(), 3);
+    int count = 0;
 
-                   // Set block at new position
-                   serverLevel.setBlock(targetPos, currentState, 3);
+    public void move(BlockEntity blockEntity, BlockPos fromPos, BlockPos toPos) {
 
-                   // Update block entity position
-                   this.setIMUBlockEntity(targetPos);
-               }
-           }
-       }
-    */
+
+        count++;
+        if(count%60 == 0) {
+            //BlockPos fromPos = new BlockPos(100, 64, 100);
+            // BlockPos fromPos5 = new BlockPos(fromPos.getX(), fromPos.getY(), fromPos.getZ());
+
+            if (level != null) {
+                LOGGER.info("LEVEL IS NT NULL");
+            }
+
+            BlockPos fromPos1 = new BlockPos(blockEntity.getBlockPos().getX(),
+                    blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
+
+            BlockState blockState = level.getBlockState(fromPos1);
+
+
+/*
+            for (int x = -1; x <= 1; x++) {
+                for (int y = -1; y <= 1; y++) {
+                    for (int z = -1; z <= 1; z++) {
+                        // Calculate the position of the current block
+                        BlockPos currentPos = new BlockPos(fromPos.getX() + x,
+                                        fromPos.getY() + y, fromPos.getZ() + z);
+
+                        LOGGER.info("from " + fromPos.getX() + "  cur: " + currentPos);
+
+                        // Get the BlockState at the current position
+                        BlockState blockState1 = level.getBlockState(currentPos);
+
+                        // Check if the block is not air
+                        if (!blockState1.isAir()) {
+                            LOGGER.info("Block at " + currentPos + " is NOT air.");
+                            /*level.removeBlock(currentPos, true);
+                            level.removeBlockEntity(currentPos);
+                            level.setBlock(currentPos, blockState1, Block.UPDATE_ALL);
+                            level.sendBlockUpdated(currentPos, blockState1, blockState1, Block.UPDATE_ALL); // Send update to the client
+
+                        }
+                        else {
+                            LOGGER.info("air.");
+                        }
+                    }
+                }
+            }
+
+            LOGGER.info("pos:  " + blockEntity.getBlockPos());
+*/
+
+            if (!blockState.isAir()) {
+
+                LOGGER.info("NOT AIR");
+
+                HolderLookup.Provider lookupProvider = level.registryAccess();
+                CompoundTag nbtData = blockEntity.saveWithFullMetadata(lookupProvider);
+
+
+                level.removeBlockEntity(fromPos1);
+                level.removeBlock(fromPos1, true);
+
+                level.setBlock(toPos, blockState, Block.UPDATE_ALL);
+                level.setBlockEntity(blockEntity);
+
+
+               BlockEntity newBlockEntity = level.getBlockEntity(toPos);
+                   if (newBlockEntity != null) {
+                     nbtData.putInt("x", toPos.getX());
+                     nbtData.putInt("y", toPos.getY());
+                     nbtData.putInt("z", toPos.getZ());
+
+                     newBlockEntity.loadCustomOnly(nbtData, lookupProvider);
+                  }
+
+            }
+
+        }
+
+   }
+
+
     private void setIMUBlockEntity(BlockPos newPos) {
        if (this.level instanceof ServerLevel serverLevel) {
            BlockEntity newEntity = serverLevel.getBlockEntity(newPos);

@@ -15,7 +15,7 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
     }
     @Override
     public void render(IMUBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
+        /*poseStack.pushPose();
 
         // Translate to the center of the block
         poseStack.translate(0.5, 0.5, 0.5);
@@ -35,6 +35,6 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         // Render the block
         Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockEntity.getBlockState(), poseStack, bufferSource, packedLight, packedOverlay);
 
-        poseStack.popPose();
+        poseStack.popPose();*/
     }
 }
