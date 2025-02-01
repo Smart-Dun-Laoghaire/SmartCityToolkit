@@ -20,6 +20,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.nbt.CompoundTag;
@@ -31,8 +34,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class IMUBlock extends Block implements EntityBlock {
     private final Sensor linkedSensor;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
     public IMUBlock(Properties properties, Sensor sensor) {
         super(properties);
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
+
         if (sensor == null) {
             //throw new IllegalArgumentException("Sensor cannot be null");
         }
@@ -41,6 +48,31 @@ public class IMUBlock extends Block implements EntityBlock {
         }
         this.linkedSensor = sensor;
     }
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+    private static Direction getNextDirection(Direction current) {
+        return switch (current) {
+            case NORTH -> Direction.EAST;
+            case EAST -> Direction.SOUTH;
+            case SOUTH -> Direction.WEST;
+            case WEST -> Direction.UP;
+            case UP -> Direction.DOWN;
+            case DOWN -> Direction.NORTH;
+        };
+    }
+    @Override
+    public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
+        Direction currentFacing = state.getValue(FACING);
+        Direction nextFacing = getNextDirection(currentFacing);
+
+        //conditional block logic
+
+        world.setBlock(pos, state.setValue(FACING, nextFacing), 2);
+        System.out.println("Block rotated to " + nextFacing);
+        world.scheduleTick(pos, this, 60);
+    }
+
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new IMUBlockEntity(pos, state);
@@ -67,6 +99,10 @@ public class IMUBlock extends Block implements EntityBlock {
         });
     }
 
+    @Override
+    public void onPlace(BlockState state, Level world, BlockPos pos, BlockState oldState, boolean isMoving) {
+        world.scheduleTick(pos, this, 60); // everx 3 seconds
+    }
     @Override
     public void onRemove(@NotNull BlockState state, Level world, BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {

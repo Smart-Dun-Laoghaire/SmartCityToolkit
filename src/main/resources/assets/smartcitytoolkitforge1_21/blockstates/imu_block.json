@@ -1,5 +1,10 @@
 {
   "variants": {
-    "": { "model": "smartcitytoolkitforge1_21:block/imu_block" }
+    "facing=north": { "model": "smartcitytoolkitforge1_21:block/imu_block", "y": 0 },
+    "facing=east": { "model": "smartcitytoolkitforge1_21:block/imu_block", "y": 90 },
+    "facing=south": { "model": "smartcitytoolkitforge1_21:block/imu_block", "y": 180 },
+    "facing=west": { "model": "smartcitytoolkitforge1_21:block/imu_block", "y": 270 },
+    "facing=up": { "model": "smartcitytoolkitforge1_21:block/imu_block", "x": 270 },
+    "facing=down": { "model": "smartcitytoolkitforge1_21:block/imu_block", "x": 90 }
   }
 }
