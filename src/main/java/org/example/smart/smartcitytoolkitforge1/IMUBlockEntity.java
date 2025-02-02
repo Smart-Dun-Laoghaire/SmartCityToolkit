@@ -43,6 +43,13 @@ public class IMUBlockEntity extends BlockEntity {
     private float positionY = 0;
     private float positionZ = 0;
 
+    private int light_UP = 0;
+    private int light_DOWN = 0;
+    private int light_FORWARD = 0;
+    private int light_BACK = 0;
+    private int light_LEFT = 0;
+    private int light_RIGHT = 0;
+
 
     private static final Logger LOGGER = LogManager.getLogger();
 
@@ -198,4 +205,51 @@ public class IMUBlockEntity extends BlockEntity {
        }
    }
 
+    public int getLight_UP() {
+        return light_UP;
+    }
+
+    public void setLight_UP(int light_UP) {
+        this.light_UP = light_UP;
+    }
+
+    public int getLight_DOWN() {
+        return light_DOWN;
+    }
+
+    public void setLight_DOWN(int light_DOWN) {
+        this.light_DOWN = light_DOWN;
+    }
+
+    public int getLight_FORWARD() {
+        return light_FORWARD;
+    }
+
+    public void setLight_FORWARD(int light_FORWARD) {
+        this.light_FORWARD = light_FORWARD;
+    }
+
+    public int getLight_BACK() {
+        return light_BACK;
+    }
+
+    public void setLight_BACK(int light_BACK) {
+        this.light_BACK = light_BACK;
+    }
+
+    public int getLight_LEFT() {
+        return light_LEFT;
+    }
+
+    public void setLight_LEFT(int light_LEFT) {
+        this.light_LEFT = light_LEFT;
+    }
+
+    public int getLight_RIGHT() {
+        return light_RIGHT;
+    }
+
+    public void setLight_RIGHT(int light_RIGHT) {
+        this.light_RIGHT = light_RIGHT;
+    }
 }

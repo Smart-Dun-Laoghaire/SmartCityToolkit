@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
@@ -58,14 +59,15 @@ public class IMUBlock extends Block implements EntityBlock {
         builder.add(FACING);
     }
     private static Direction getNextDirection(Direction current) {
-        return switch (current) {
+        /*return switch (current) {
             case NORTH -> Direction.EAST;
             case EAST -> Direction.SOUTH;
             case SOUTH -> Direction.WEST;
             case WEST -> Direction.UP;
             case UP -> Direction.DOWN;
             case DOWN -> Direction.NORTH;
-        };
+        };*/
+        return current;
     }
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
@@ -120,5 +122,8 @@ public class IMUBlock extends Block implements EntityBlock {
         }
     }
 
-
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
+    }
 }
