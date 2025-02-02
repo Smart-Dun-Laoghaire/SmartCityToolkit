@@ -29,12 +29,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class IMUBlock extends Block implements EntityBlock {
     private final Sensor linkedSensor;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
 
     public IMUBlock(Properties properties, Sensor sensor) {
         super(properties);

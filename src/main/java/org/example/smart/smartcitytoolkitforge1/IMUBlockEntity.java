@@ -144,82 +144,46 @@ public class IMUBlockEntity extends BlockEntity {
 
     int count = 0;
 
-    public void move(BlockEntity blockEntity, BlockPos fromPos, BlockPos toPos) {
+    public void move(BlockEntity blockEntity) {
 
 
         count++;
-        if(count%60 == 0) {
-            //BlockPos fromPos = new BlockPos(100, 64, 100);
-            // BlockPos fromPos5 = new BlockPos(fromPos.getX(), fromPos.getY(), fromPos.getZ());
-
+        if (count % 10 == 0) {
             if (level != null) {
-                LOGGER.info("LEVEL IS NT NULL");
-            }
-
-            BlockPos fromPos1 = new BlockPos(blockEntity.getBlockPos().getX(),
-                    blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ());
-
-            BlockState blockState = level.getBlockState(fromPos1);
+                LOGGER.info("LEVEL IS NOT NULL");
 
 
-/*
-            for (int x = -1; x <= 1; x++) {
-                for (int y = -1; y <= 1; y++) {
-                    for (int z = -1; z <= 1; z++) {
-                        // Calculate the position of the current block
-                        BlockPos currentPos = new BlockPos(fromPos.getX() + x,
-                                        fromPos.getY() + y, fromPos.getZ() + z);
 
-                        LOGGER.info("from " + fromPos.getX() + "  cur: " + currentPos);
+                BlockPos fromPos1 = blockEntity.getBlockPos();
+                BlockPos toPos = new BlockPos(fromPos1.getX() + 1,
+                        fromPos1.getY(), fromPos1.getZ());
 
-                        // Get the BlockState at the current position
-                        BlockState blockState1 = level.getBlockState(currentPos);
+                BlockState blockState = level.getBlockState(fromPos1);
 
-                        // Check if the block is not air
-                        if (!blockState1.isAir()) {
-                            LOGGER.info("Block at " + currentPos + " is NOT air.");
-                            /*level.removeBlock(currentPos, true);
-                            level.removeBlockEntity(currentPos);
-                            level.setBlock(currentPos, blockState1, Block.UPDATE_ALL);
-                            level.sendBlockUpdated(currentPos, blockState1, blockState1, Block.UPDATE_ALL); // Send update to the client
 
-                        }
-                        else {
-                            LOGGER.info("air.");
-                        }
+                if (!blockState.isAir()) {
+
+
+                    level.removeBlockEntity(fromPos1);
+                    level.removeBlock(fromPos1, false);
+
+                    level.setBlock(toPos, blockState, Block.UPDATE_ALL);
+                    level.setBlockEntity(blockEntity);
+
+
+                    /*HolderLookup.Provider lookupProvider = level.registryAccess();
+                    CompoundTag nbtData = blockEntity.saveWithFullMetadata(lookupProvider);
+
+                    level.setBlock(toPos, blockState, Block.UPDATE_ALL);
+                    BlockEntity newBlockEntity = level.getBlockEntity(toPos);
+                    if (newBlockEntity != null) {
+                        newBlockEntity.loadWithComponents(nbtData, lookupProvider);
                     }
+
+
+                    level.sendBlockUpdated(toPos, blockState, blockState, Block.UPDATE_ALL);*/
                 }
             }
-
-            LOGGER.info("pos:  " + blockEntity.getBlockPos());
-*/
-
-            if (!blockState.isAir()) {
-
-                LOGGER.info("NOT AIR");
-
-                HolderLookup.Provider lookupProvider = level.registryAccess();
-                CompoundTag nbtData = blockEntity.saveWithFullMetadata(lookupProvider);
-
-
-                level.removeBlockEntity(fromPos1);
-                level.removeBlock(fromPos1, true);
-
-                level.setBlock(toPos, blockState, Block.UPDATE_ALL);
-                level.setBlockEntity(blockEntity);
-
-
-               BlockEntity newBlockEntity = level.getBlockEntity(toPos);
-                   if (newBlockEntity != null) {
-                     nbtData.putInt("x", toPos.getX());
-                     nbtData.putInt("y", toPos.getY());
-                     nbtData.putInt("z", toPos.getZ());
-
-                     newBlockEntity.loadCustomOnly(nbtData, lookupProvider);
-                  }
-
-            }
-
         }
 
    }

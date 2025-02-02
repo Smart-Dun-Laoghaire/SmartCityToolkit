@@ -15,6 +15,9 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
     }
     @Override
     public void render(IMUBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
+
+        blockEntity.move(blockEntity);
+
         /*poseStack.pushPose();
 
         // Translate to the center of the block
