@@ -59,6 +59,7 @@ public class IMUSensor extends Sensor{
     private int light_RIGHT = 0;
     public IMUSensor(BlockBehaviour.Properties properties, BlockPos location) {
         super(properties, location);
+        Sensor.all.add(this);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class IMUSensor extends Sensor{
             blockEntity.setRotation(rotationX, rotationY, rotationZ);
             blockEntity.setPosition(positionX, positionY, positionZ);
             blockEntity.setLight(light_UP, light_DOWN, light_FORWARD, light_BACK, light_LEFT, light_RIGHT);
-            blockEntity.setChanged(); // Mark the block entity as dirty to save changes
+            blockEntity.setChanged(); // Mark the block entity as dirty to save
         }
     }
     public void fetchIMUDataFromAzure() {

@@ -32,7 +32,7 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
 
         int blockLight = LightTexture.pack(15, 15);
 
-        float yaw = blockEntity.getRotationX(); // iz nekog razloga ne dolaze kao degrees?
+        float yaw = blockEntity.getRotationX();
         float pitch = blockEntity.getRotationY();
         float roll = blockEntity.getRotationZ();
 
@@ -43,10 +43,9 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         int LL = blockEntity.getLight_LEFT();
         int LR = blockEntity.getLight_RIGHT();
 
-
-        poseStack.mulPose(Axis.YP.rotationDegrees(0));
-        poseStack.mulPose(Axis.XP.rotationDegrees(0));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
+        poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(roll));
 
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = dispatcher.getBlockModel(blockEntity.getBlockState());

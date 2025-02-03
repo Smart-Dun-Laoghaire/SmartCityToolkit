@@ -35,6 +35,8 @@ import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
+
 public class IMUBlock extends Block implements EntityBlock {
     private final Sensor linkedSensor;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
@@ -77,7 +79,7 @@ public class IMUBlock extends Block implements EntityBlock {
         //conditional block logic
 
         world.setBlock(pos, state.setValue(FACING, nextFacing), 2);
-        System.out.println("Block rotated to " + nextFacing);
+        //System.out.println("Block rotated to " + nextFacing);
         world.scheduleTick(pos, this, 60);
     }
 
@@ -92,6 +94,15 @@ public class IMUBlock extends Block implements EntityBlock {
         return level.isClientSide ? null : (level1, pos, state1, blockEntity) -> {
             if (blockEntity instanceof IMUBlockEntity) {
                 ((IMUBlockEntity) blockEntity).setLinkedSensor((IMUSensor) linkedSensor);
+
+                try {
+                    ((IMUBlockEntity) blockEntity).getLinkedSensor().update(level1, pos);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 ((IMUBlockEntity) blockEntity).tick();
             }
         };

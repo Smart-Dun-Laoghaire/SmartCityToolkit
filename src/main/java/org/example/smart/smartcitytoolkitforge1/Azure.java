@@ -2,12 +2,15 @@ package org.example.smart.smartcitytoolkitforge1;
 import org.example.smart.smartcitytoolkitforge1.IMUData;
 public class Azure {
     private final IMUData Data;
+
     public Azure() {
         Data = new IMUData();
     }
+
     public void update() {
         simulateData();
     }
+
     public void simulateData() {
         Data.positionY += 0.01f;
         Data.positionX += 0.01f;
