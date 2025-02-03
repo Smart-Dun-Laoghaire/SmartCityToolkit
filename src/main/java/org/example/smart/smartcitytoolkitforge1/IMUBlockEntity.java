@@ -49,14 +49,11 @@ public class IMUBlockEntity extends BlockEntity {
     private int light_BACK = 0;
     private int light_LEFT = 0;
     private int light_RIGHT = 0;
-
-
+    private IMUSensor linkedSensor = null;
     private static final Logger LOGGER = LogManager.getLogger();
-
 
     public IMUBlockEntity(BlockPos pos, BlockState state) {
        super(Smartcitytoolkitforge1.IMU_BLOCK_ENTITY_TYPE.get(), pos, state);
-       final Sensor linkedSensor;
    }
 
     @Override
@@ -69,22 +66,34 @@ public class IMUBlockEntity extends BlockEntity {
         positionX = tag.getFloat("positionX");
         positionY = tag.getFloat("positionY");
         positionZ = tag.getFloat("positionZ");
+        light_UP = tag.getInt("light_UP");
+        light_DOWN = tag.getInt("light_DOWN");
+        light_FORWARD = tag.getInt("light_FORWARD");
+        light_BACK = tag.getInt("light_BACK");
+        light_LEFT = tag.getInt("light_LEFT");
+        light_RIGHT = tag.getInt("light_RIGHT");
     }
     @Override
     protected void saveAdditional(CompoundTag tag,  HolderLookup.Provider registries) {
         super.saveAdditional(tag, registries);
-        // Save rotation and position data
+        // Save rotation, light and position data
         tag.putFloat("rotationX", rotationX);
         tag.putFloat("rotationY", rotationY);
         tag.putFloat("rotationZ", rotationZ);
         tag.putFloat("positionX", positionX);
         tag.putFloat("positionY", positionY);
         tag.putFloat("positionZ", positionZ);
+        tag.putInt("light_UP", light_UP);
+        tag.putInt("light_DOWN", light_DOWN);
+        tag.putInt("light_FORWARD", light_FORWARD);
+        tag.putInt("light_BACK", light_BACK);
+        tag.putInt("light_LEFT", light_LEFT);
+        tag.putInt("light_RIGHT", light_RIGHT);
     }
 
     public void tick() {
         if (level != null && !level.isClientSide) {
-            IMUSensor IMUSensor = null;
+            IMUSensor IMUSensor = linkedSensor;
             if (IMUSensor != null) {
                 rotationX = IMUSensor.getRotationX();
                 rotationY = IMUSensor.getRotationY();
@@ -92,6 +101,12 @@ public class IMUBlockEntity extends BlockEntity {
                 positionX = IMUSensor.getPositionX();
                 positionY = IMUSensor.getPositionY();
                 positionZ = IMUSensor.getPositionZ();
+                light_UP = IMUSensor.getLight_UP();
+                light_DOWN = IMUSensor.getLight_DOWN();
+                light_FORWARD = IMUSensor.getLight_FORWARD();
+                light_BACK = IMUSensor.getLight_BACK();
+                light_LEFT = IMUSensor.getLight_LEFT();
+                light_RIGHT = IMUSensor.getLight_RIGHT();
                 setChanged(); // Mark the block entity as dirty to save changes
             }
         }
@@ -107,6 +122,15 @@ public class IMUBlockEntity extends BlockEntity {
         this.positionX = positionX;
         this.positionY = positionY;
         this.positionZ = positionZ;
+    }
+
+    public void setLight(int light_UP, int light_DOWN, int light_FORWARD, int light_BACK, int light_LEFT, int light_RIGHT) {
+        this.light_UP = light_UP;
+        this.light_DOWN = light_DOWN;
+        this.light_FORWARD = light_FORWARD;
+        this.light_BACK = light_BACK;
+        this.light_LEFT = light_LEFT;
+        this.light_RIGHT = light_RIGHT;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -148,6 +172,9 @@ public class IMUBlockEntity extends BlockEntity {
         return positionZ;
     }
 
+    public void setLinkedSensor(IMUSensor sensor) {
+        linkedSensor = sensor;
+    }
 
     int count = 0;
 

@@ -91,6 +91,7 @@ public class IMUBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : (level1, pos, state1, blockEntity) -> {
             if (blockEntity instanceof IMUBlockEntity) {
+                ((IMUBlockEntity) blockEntity).setLinkedSensor((IMUSensor) linkedSensor);
                 ((IMUBlockEntity) blockEntity).tick();
             }
         };
