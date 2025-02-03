@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -47,11 +49,25 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         int LL = blockEntity.getLight_LEFT();
         int LR = blockEntity.getLight_RIGHT();
 
-        poseStack.translate(0.5, 0.5, 0.5);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
-        poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(roll));
-        poseStack.translate(-0.5, -0.5, -0.5);
+
+        Quaternionf rotation = new Quaternionf();
+        rotation.rotateY((float) Math.toRadians(yaw));  // Apply yaw rotation
+        rotation.rotateX((float) Math.toRadians(pitch));  // Apply pitch rotation
+        rotation.rotateZ((float) Math.toRadians(roll));  // Apply roll rotation
+
+        float pivotX = 0.5f + positionX;
+        float pivotY = 0.5f + positionY;
+        float pivotZ = 0.5f + positionZ;
+
+        poseStack.rotateAround(rotation, pivotX, pivotY, pivotZ);  // Apply rotation around the pivot
+
+
+
+        // POSITION / MOVING
+        poseStack.translate(positionX, positionY, positionZ);
+
+
+
 
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = dispatcher.getBlockModel(blockEntity.getBlockState());
@@ -78,7 +94,6 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
 
         poseStack.popPose();
     }
-
     private void renderFaceWithTint(BlockRenderDispatcher dispatcher, VertexConsumer vertexConsumer, PoseStack poseStack,
                                     BlockState state, BakedModel model, int light, int overlay,
                                     int lightColor, Direction direction) {
