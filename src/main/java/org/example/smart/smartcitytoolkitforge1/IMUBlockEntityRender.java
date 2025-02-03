@@ -32,9 +32,13 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
 
         int blockLight = LightTexture.pack(15, 15);
 
-        float yaw = blockEntity.getRotationX();
+        float positionX = blockEntity.getPositionX();
+        float positionY = blockEntity.getPositionY();
+        float positionZ = blockEntity.getPositionZ();
+
+        float roll = blockEntity.getRotationX();
         float pitch = blockEntity.getRotationY();
-        float roll = blockEntity.getRotationZ();
+        float yaw = blockEntity.getRotationZ();
 
         int LU = blockEntity.getLight_UP();
         int LD = blockEntity.getLight_DOWN();
@@ -43,9 +47,11 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         int LL = blockEntity.getLight_LEFT();
         int LR = blockEntity.getLight_RIGHT();
 
+        poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.YP.rotationDegrees(yaw));
         poseStack.mulPose(Axis.XP.rotationDegrees(pitch));
         poseStack.mulPose(Axis.ZP.rotationDegrees(roll));
+        poseStack.translate(-0.5, -0.5, -0.5);
 
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = dispatcher.getBlockModel(blockEntity.getBlockState());
@@ -53,33 +59,33 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.cutout());
 
         // FORWARD
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LF, LF, LF, Direction.NORTH);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LF, Direction.NORTH);
 
         // BACK
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LB, LB, LB, Direction.SOUTH);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LB, Direction.SOUTH);
 
         // LEFT
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LL, LL, LL, Direction.WEST);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LL, Direction.WEST);
 
         // RIGHT
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LR, LR, LR, Direction.EAST);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LR, Direction.EAST);
 
         // UP
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LU, LU, LU, Direction.UP);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LU, Direction.UP);
 
         // DOWN
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LD, LD, LD, Direction.DOWN);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LD, Direction.DOWN);
 
         poseStack.popPose();
     }
 
     private void renderFaceWithTint(BlockRenderDispatcher dispatcher, VertexConsumer vertexConsumer, PoseStack poseStack,
                                     BlockState state, BakedModel model, int light, int overlay,
-                                    int r, int g, int b, Direction direction) {
+                                    int lightColor, Direction direction) {
         List<BakedQuad> quads = model.getQuads(state, direction, RandomSource.create());
 
         for (BakedQuad quad : quads) {
-            vertexConsumer.putBulkData(poseStack.last(), quad, r / 255f, g / 255f, b / 255f, 1.0f, light, overlay);
+            vertexConsumer.putBulkData(poseStack.last(), quad, lightColor / 255f, lightColor / 255f, lightColor / 255f, 1.0f, light, overlay);
         }
     }
 }
