@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -15,33 +16,133 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 
+import static com.mojang.text2speech.Narrator.LOGGER;
 
 
-
+@Mod.EventBusSubscriber
 public class BlockInteractionHandler {
+
+
+    /*@SubscribeEvent
+    public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
+
+        BlockPos pos = event.getPos();
+        Level level = event.getLevel();
+        BlockEntity blockEntity = level.getBlockEntity(pos);
+
+        if (blockEntity instanceof IMUBlockEntity) {
+            IMUBlockEntity imuBlockEntity = (IMUBlockEntity) blockEntity;
+            imuBlockEntity.setRotation(imuBlockEntity.getRotationX() + 45.1f, 0, 0);
+        }
+
+
+        event.setCancellationResult(InteractionResult.SUCCESS);
+        event.setCanceled(true);
+    }*/
+
 
     @SubscribeEvent
     public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
+        InteractionHand hand = event.getHand();
         Player player = event.getEntity();
-        Level world = event.getLevel();
+        Level level = event.getLevel();
         BlockPos pos = event.getPos();
-        BlockState state = world.getBlockState(pos);
 
-        // Check if the block has a BlockEntity
-        if (world.getBlockEntity(pos) != null) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
+        if (player.getItemInHand(hand).isEmpty() && level.getBlockEntity(pos) != null) {
+            BlockEntity blockEntity = level.getBlockEntity(pos);
 
-            // Get the face of the block that was clicked
-            BlockHitResult hitResult = (BlockHitResult) player.pick(5.0, 1.0F, false); // Adjust the distance as needed
-            if (hitResult.getType() == HitResult.Type.BLOCK) {
-                Direction clickedFace = hitResult.getDirection();
 
-                // Now you have the clicked face and the BlockEntity
-                System.out.println("Player right-clicked face: " + clickedFace + " of BlockEntity at: " + pos);
+            if (blockEntity instanceof IMUBlockEntity) {
+                IMUBlockEntity imuBlockEntity = (IMUBlockEntity) blockEntity;
 
-                // You can now perform actions based on the clicked face and BlockEntity
+                BlockHitResult hitResult = (BlockHitResult) player.pick(5.0, 1.0F, false);
+                if (hitResult.getType() == HitResult.Type.BLOCK) {
+                    Direction clickedFace = hitResult.getDirection();
+
+                    String targetedFace = "";
+                    String currentFace = clickedFace.toString().toUpperCase();
+                    int maxFace = 3;
+                    boolean xRot = false, yRot = false, zRot = false;
+
+                    for (int i = 0; i < maxFace; i++){
+
+
+
+                        if(i % 3 == 0 && !xRot){
+                            float rotationX = imuBlockEntity.getRotationX();
+                            System.out.println(rotationX + " x");
+                            targetedFace = getTargetedFace(rotationX, "X", currentFace);
+                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
+                            else {xRot = true;System.out.println("X TRUE");}
+                        }
+                        else if(i % 3 == 1 && !yRot){
+                            float rotationY = imuBlockEntity.getRotationY();
+                            System.out.println(rotationY + " y");
+                            targetedFace = getTargetedFace(rotationY, "Y", currentFace);
+                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
+                            else {yRot = true;System.out.println("y TRUE");}
+                        }
+                        else if(i % 3 == 2 && !zRot){
+                            float rotationZ = imuBlockEntity.getRotationZ();
+                            System.out.println(rotationZ + " z");
+                            targetedFace = getTargetedFace(rotationZ, "Z", currentFace);
+                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
+                            else {zRot = true;System.out.println("z TRUE");}
+                        }
+
+
+                        if(i > 3) {
+                            if (!xRot) {
+                                float rotationX = imuBlockEntity.getRotationX();
+                                targetedFace = getTargetedFace(rotationX, "X", currentFace);
+                                if (targetedFace.equalsIgnoreCase(currentFace)) {
+                                    maxFace++;
+                                } else {
+                                    xRot = true;
+                                    System.out.println("X TRUE");
+                                }
+                            } else if (!yRot) {
+                                float rotationY = imuBlockEntity.getRotationY();
+                                targetedFace = getTargetedFace(rotationY, "Y", currentFace);
+                                if (targetedFace.equalsIgnoreCase(currentFace)) {
+                                    maxFace++;
+                                } else {
+                                    yRot = true;
+                                    System.out.println("Y TRUE");
+                                }
+                            } else if (!zRot) {
+                                float rotationZ = imuBlockEntity.getRotationZ();
+                                targetedFace = getTargetedFace(rotationZ, "Z", currentFace);
+                                if (targetedFace.equalsIgnoreCase(currentFace)) {
+                                    maxFace++;
+                                } else {
+                                    zRot = true;
+                                    System.out.println("z is done");
+                                }
+                            }
+                        }
+
+                        System.out.println("target face  " + targetedFace + " 1");
+                        System.out.println("current face  " + currentFace + " 1");
+                        currentFace = targetedFace;
+
+                        if(i > 6){
+                            break;
+                        }
+
+                    }
+
+                    System.out.println("Player right-clicked face: " + clickedFace + " of BlockEntity at: " + pos);
+                    System.out.println("Targeted Face: " + targetedFace);
+                }
             }
+
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
         }
+
+
+
     }
 
 
@@ -49,41 +150,127 @@ public class BlockInteractionHandler {
 
 
 
-    public String getTargetedFace(float angle, String axis, String face) {
+    public static String getTargetedFace(float angle, String axis, String face) {
 
         angle += Math.clamp(angle * 1000, -1, 1) * 45;
         angle = angle % 360;
         angle = angle / 90;
         angle = (float)Math.floor(angle);
 
-        switch(axis){
-            case "X":
-
-                // ovisno o danom licu mijenjamo angle
-                switch (face){
-                    case "UP": angle += 0; break;
-                    case "NORTH": angle += 1; break;
-                    case "DOWN": angle += 2; break;
-                    case "SOUTH": angle += 3; break;
-                }
-
-                // vraća korektnu stranu
-                switch ((int)(angle % 4)){
-
-                    case 0: return "UP";
-                    case 1: return "NORTH";
-                    case 2: return "DOWN";
-                    case 3: return "SOUTH";
-
-                }
-                return face;
+        face = face.toUpperCase();
+        axis = axis.toUpperCase();
 
 
-            case "Y":
+        System.out.println(angle + "  angle transformed");
 
-                break;
 
+        if(axis.equalsIgnoreCase("Z")) {
+
+            // ovisno o danom licu mijenjamo angle
+            switch (face) {
+                case "NORTH":
+                    angle += 0;
+                    break;
+                case "EAST":
+                    angle += 1;
+                    break;
+                case "SOUTH":
+                    angle += 2;
+                    break;
+                case "WEST":
+                    angle += 3;
+                    break;
+                default:
+                    System.out.println("SHOULD return");
+                    return face;
+            }
+
+            System.out.println("SHOULD stop");
+
+            // vraća korektnu stranu
+            switch ((int) (angle % 4)) {
+                case 0:
+                    return "NORTH";
+                case 1:
+                    return "EAST";
+                case 2:
+                    return "SOUTH";
+                case 3:
+                    return "WEST";
+            }
         }
+
+
+        if(axis.equalsIgnoreCase("Y")) {
+
+            // ovisno o danom licu mijenjamo angle
+            switch (face) {
+                case "UP":
+                    angle += 0;
+                    break;
+                case "NORTH":
+                    angle += 1;
+                    break;
+                case "DOWN":
+                    angle += 2;
+                    break;
+                case "SOUTH":
+                    angle += 3;
+                    break;
+                default:
+                    return face;
+            }
+
+            // vraća korektnu stranu
+            switch ((int) (angle % 4)) {
+                case 0:
+                    return "UP";
+                case 1:
+                    return "NORTH";
+                case 2:
+                    return "DOWN";
+                case 3:
+                    return "SOUTH";
+            }
+        }
+
+
+        if(axis.equalsIgnoreCase("X")){
+            // ovisno o danom licu mijenjamo angle
+            switch (face) {
+                case "UP":
+                    angle += 0;
+                    break;
+                case "EAST":
+                    angle += 1;
+                    break;
+                case "DOWN":
+                    angle += 2;
+                    break;
+                case "WEST":
+                    angle += 3;
+                    break;
+                default:
+                    return face;
+            }
+
+            // vraća korektnu stranu
+            switch ((int) (angle % 4)) {
+                case 0:
+                    return "UP";
+                case 1:
+                    return "EAST";
+                case 2:
+                    return "DOWN";
+                case 3:
+                    return "WEST";
+            }
+        }
+
+
+
+
+
 
         return face;
 

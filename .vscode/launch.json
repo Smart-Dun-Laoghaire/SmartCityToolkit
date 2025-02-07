@@ -1,0 +1,65 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "runClient",
+      "request": "launch",
+      "mainClass": "net.minecraftforge.bootstrap.ForgeBootstrap",
+      "projectName": "smartcitytoolkitforge1.21",
+      "cwd": "${workspaceFolder}\\run",
+      "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dREGISTRIES -Dforge.enabledGameTestNamespaces\u003dsmartcitytoolkitforge1_21 -Dforge.enableGameTest\u003dtrue -Djava.net.preferIPv6Addresses\u003dsystem -XX:HeapDumpPath\u003dMojangTricksIntelDriversForPerformance_javaw.exe_minecraft.exe.heapdump",
+      "args": "--launchTarget forge_userdev_client --version MOD_DEV --assetIndex 17 --assetsDir C:\\Users\\ANA\\.gradle\\caches\\forge_gradle\\assets --gameDir .",
+      "env": {
+        "MOD_CLASSES": "${workspaceFolder}\\build\\sourcesSets\\main",
+        "MCP_MAPPINGS": "official_1.21"
+      },
+      "preLaunchTask": "prepareRunClientCompile"
+    },
+    {
+      "type": "java",
+      "name": "runData",
+      "request": "launch",
+      "mainClass": "net.minecraftforge.bootstrap.ForgeBootstrap",
+      "projectName": "smartcitytoolkitforge1.21",
+      "cwd": "${workspaceFolder}\\run-data",
+      "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dREGISTRIES -Djava.net.preferIPv6Addresses\u003dsystem",
+      "args": "--launchTarget forge_userdev_data --assetIndex 17 --assetsDir C:\\Users\\ANA\\.gradle\\caches\\forge_gradle\\assets --gameDir . --mod smartcitytoolkitforge1_21 --all --output C:\\Users\\ANA\\Desktop\\Niko\\UnityFolder\\Projects\\SmartCityToolkit\\src\\generated\\resources --existing C:\\Users\\ANA\\Desktop\\Niko\\UnityFolder\\Projects\\SmartCityToolkit\\src\\main\\resources",
+      "env": {
+        "MOD_CLASSES": "${workspaceFolder}\\build\\sourcesSets\\main",
+        "MCP_MAPPINGS": "official_1.21"
+      },
+      "preLaunchTask": "prepareRunDataCompile"
+    },
+    {
+      "type": "java",
+      "name": "runGameTestServer",
+      "request": "launch",
+      "mainClass": "net.minecraftforge.bootstrap.ForgeBootstrap",
+      "projectName": "smartcitytoolkitforge1.21",
+      "cwd": "${workspaceFolder}\\run",
+      "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dREGISTRIES -Dforge.enabledGameTestNamespaces\u003dsmartcitytoolkitforge1_21 -Djava.net.preferIPv6Addresses\u003dsystem",
+      "args": "--launchTarget forge_userdev_server_gametest --gameDir .",
+      "env": {
+        "MOD_CLASSES": "${workspaceFolder}\\build\\sourcesSets\\main",
+        "MCP_MAPPINGS": "official_1.21"
+      },
+      "preLaunchTask": "prepareRunGameTestServerCompile"
+    },
+    {
+      "type": "java",
+      "name": "runServer",
+      "request": "launch",
+      "mainClass": "net.minecraftforge.bootstrap.ForgeBootstrap",
+      "projectName": "smartcitytoolkitforge1.21",
+      "cwd": "${workspaceFolder}\\run",
+      "vmArgs": "-Dforge.logging.console.level\u003ddebug -Dforge.logging.markers\u003dREGISTRIES -Dforge.enabledGameTestNamespaces\u003dsmartcitytoolkitforge1_21 -Dforge.enableGameTest\u003dtrue -Djava.net.preferIPv6Addresses\u003dsystem",
+      "args": "--launchTarget forge_userdev_server --gameDir . --nogui",
+      "env": {
+        "MOD_CLASSES": "${workspaceFolder}\\build\\sourcesSets\\main",
+        "MCP_MAPPINGS": "official_1.21"
+      },
+      "preLaunchTask": "prepareRunServerCompile"
+    }
+  ]
+}
