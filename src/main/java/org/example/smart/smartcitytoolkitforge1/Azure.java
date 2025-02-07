@@ -1,8 +1,7 @@
 package org.example.smart.smartcitytoolkitforge1;
-
+import org.example.smart.smartcitytoolkitforge1.IMUData;
 public class Azure {
-
-    /*private final IMUData Data;
+    private final IMUData Data;
 
     public Azure() {
         Data = new IMUData();
@@ -18,8 +17,8 @@ public class Azure {
         Data.positionZ += 0f;
 
         Data.rotationX += 1f;
-        Data.rotationY += 0f;
-        Data.rotationZ += 0f;
+        Data.rotationY += 1f;
+        Data.rotationZ += 1f;
 
         Data.light_UP = 135;
         Data.light_DOWN = 55;
@@ -28,7 +27,7 @@ public class Azure {
         Data.light_LEFT = 98;
         Data.light_RIGHT = 33;
 
-        if(Data.positionX >= 10 || Data.positionY >= 4) {resetSimulatedData();}
+        if(Data.positionX >= 10) {resetSimulatedData();}
     }
 
     public void resetSimulatedData() {
@@ -49,6 +48,5 @@ public class Azure {
     }
     public IMUData getData() {
         return Data;
-    }*/
-
+    }
 }

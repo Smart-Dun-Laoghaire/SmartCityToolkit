@@ -18,6 +18,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.List;
 
@@ -32,9 +34,13 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
 
         int blockLight = LightTexture.pack(15, 15);
 
-        float yaw = blockEntity.getRotationX(); // iz nekog razloga ne dolaze kao degrees?
+        float positionX = blockEntity.getPositionX();
+        float positionY = blockEntity.getPositionY();
+        float positionZ = blockEntity.getPositionZ();
+
+        float roll = blockEntity.getRotationX();
         float pitch = blockEntity.getRotationY();
-        float roll = blockEntity.getRotationZ();
+        float yaw = blockEntity.getRotationZ();
 
         int LU = blockEntity.getLight_UP();
         int LD = blockEntity.getLight_DOWN();
@@ -44,9 +50,24 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         int LR = blockEntity.getLight_RIGHT();
 
 
-        poseStack.mulPose(Axis.YP.rotationDegrees(0));
-        poseStack.mulPose(Axis.XP.rotationDegrees(0));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+        Quaternionf rotation = new Quaternionf();
+        rotation.rotateY((float) Math.toRadians(yaw));  // Apply yaw rotation
+        rotation.rotateX((float) Math.toRadians(pitch));  // Apply pitch rotation
+        rotation.rotateZ((float) Math.toRadians(roll));  // Apply roll rotation
+
+        float pivotX = 0.5f + positionX;
+        float pivotY = 0.5f + positionY;
+        float pivotZ = 0.5f + positionZ;
+
+        poseStack.rotateAround(rotation, pivotX, pivotY, pivotZ);  // Apply rotation around the pivot
+
+
+
+        // POSITION / MOVING
+        poseStack.translate(positionX, positionY, positionZ);
+
+
+
 
         BlockRenderDispatcher dispatcher = Minecraft.getInstance().getBlockRenderer();
         BakedModel model = dispatcher.getBlockModel(blockEntity.getBlockState());
@@ -54,33 +75,32 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.cutout());
 
         // FORWARD
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LF, LF, LF, Direction.NORTH);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LF, Direction.NORTH);
 
         // BACK
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LB, LB, LB, Direction.SOUTH);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LB, Direction.SOUTH);
 
         // LEFT
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LL, LL, LL, Direction.WEST);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LL, Direction.WEST);
 
         // RIGHT
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LR, LR, LR, Direction.EAST);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LR, Direction.EAST);
 
         // UP
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LU, LU, LU, Direction.UP);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LU, Direction.UP);
 
         // DOWN
-        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LD, LD, LD, Direction.DOWN);
+        renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LD, Direction.DOWN);
 
         poseStack.popPose();
     }
-
     private void renderFaceWithTint(BlockRenderDispatcher dispatcher, VertexConsumer vertexConsumer, PoseStack poseStack,
                                     BlockState state, BakedModel model, int light, int overlay,
-                                    int r, int g, int b, Direction direction) {
+                                    int lightColor, Direction direction) {
         List<BakedQuad> quads = model.getQuads(state, direction, RandomSource.create());
 
         for (BakedQuad quad : quads) {
-            vertexConsumer.putBulkData(poseStack.last(), quad, r / 255f, g / 255f, b / 255f, 1.0f, light, overlay);
+            vertexConsumer.putBulkData(poseStack.last(), quad, lightColor / 255f, lightColor / 255f, lightColor / 255f, 1.0f, light, overlay);
         }
     }
 }
