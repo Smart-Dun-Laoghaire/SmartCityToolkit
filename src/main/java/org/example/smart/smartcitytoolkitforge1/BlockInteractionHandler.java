@@ -68,37 +68,34 @@ public class BlockInteractionHandler {
 
 
 
-                        if(i % 3 == 0 && !xRot){
-                            float rotationX = imuBlockEntity.getRotationX();
-                            System.out.println(rotationX + " x");
-                            targetedFace = getTargetedFace(rotationX, "X", currentFace);
-                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
-                            else {xRot = true;}
-                        }
-                        else if(i % 3 == 1 && !yRot){
-                            float rotationY = imuBlockEntity.getRotationY();
-                            System.out.println(rotationY + " y");
-                            targetedFace = getTargetedFace(rotationY, "Y", currentFace);
-                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
-                            else {yRot = true;}
-                        }
-                        else if(i % 3 == 2 && !zRot){
+                        if(i % 3 == 0 && !zRot){
                             float rotationZ = imuBlockEntity.getRotationZ();
-                            System.out.println(rotationZ + " z");
                             targetedFace = getTargetedFace(rotationZ, "Z", currentFace);
                             if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
                             else {zRot = true;}
                         }
+                        else if(i % 3 == 1 && !yRot){
+                            float rotationY = imuBlockEntity.getRotationY();
+                            targetedFace = getTargetedFace(rotationY, "Y", currentFace);
+                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
+                            else {yRot = true;}
+                        }
+                        else if(i % 3 == 2 && !xRot){
+                            float rotationX = imuBlockEntity.getRotationX();
+                            targetedFace = getTargetedFace(rotationX, "X", currentFace);
+                            if(targetedFace.equalsIgnoreCase(currentFace)) { maxFace++; }
+                            else {xRot = true;}
+                        }
 
 
                         if(i > 3) {
-                            if (!xRot) {
-                                float rotationX = imuBlockEntity.getRotationX();
-                                targetedFace = getTargetedFace(rotationX, "X", currentFace);
+                            if (!zRot) {
+                                float rotationZ = imuBlockEntity.getRotationZ();
+                                targetedFace = getTargetedFace(rotationZ, "Z", currentFace);
                                 if (targetedFace.equalsIgnoreCase(currentFace)) {
                                     maxFace++;
                                 } else {
-                                    xRot = true;
+                                    zRot = true;
                                 }
                             } else if (!yRot) {
                                 float rotationY = imuBlockEntity.getRotationY();
@@ -108,14 +105,15 @@ public class BlockInteractionHandler {
                                 } else {
                                     yRot = true;
                                 }
-                            } else if (!zRot) {
-                                float rotationZ = imuBlockEntity.getRotationZ();
-                                targetedFace = getTargetedFace(rotationZ, "Z", currentFace);
+                            } else if (!xRot) {
+                                float rotationX = imuBlockEntity.getRotationX();
+                                targetedFace = getTargetedFace(rotationX, "X", currentFace);
                                 if (targetedFace.equalsIgnoreCase(currentFace)) {
                                     maxFace++;
                                 } else {
-                                    zRot = true;
+                                    xRot = true;
                                 }
+
                             }
                         }
 
@@ -155,8 +153,6 @@ public class BlockInteractionHandler {
         face = face.toUpperCase();
         axis = axis.toUpperCase();
 
-
-        System.out.println(angle + "  angle transformed");
 
 
         if(axis.equalsIgnoreCase("Z")) {

@@ -17,8 +17,8 @@ public class Azure {
         Data.positionZ += 0f;
 
         Data.rotationX += 0.1f;
-        Data.rotationY += 0.1f;
-        Data.rotationZ += 0.0f;
+        Data.rotationY += 0.0f;
+        Data.rotationZ += 0.1f;
 
         Data.light_UP = 135;
         Data.light_DOWN = 55;
