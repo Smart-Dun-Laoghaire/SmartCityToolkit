@@ -23,23 +23,6 @@ import static com.mojang.text2speech.Narrator.LOGGER;
 public class BlockInteractionHandler {
 
 
-    /*@SubscribeEvent
-    public static void onPlayerLeftClick(PlayerInteractEvent.LeftClickBlock event) {
-
-        BlockPos pos = event.getPos();
-        Level level = event.getLevel();
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-
-        if (blockEntity instanceof IMUBlockEntity) {
-            IMUBlockEntity imuBlockEntity = (IMUBlockEntity) blockEntity;
-            imuBlockEntity.setRotation(imuBlockEntity.getRotationX() + 45.1f, 0, 0);
-        }
-
-
-        event.setCancellationResult(InteractionResult.SUCCESS);
-        event.setCanceled(true);
-    }*/
-
 
     @SubscribeEvent
     public static void onPlayerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
@@ -124,6 +107,39 @@ public class BlockInteractionHandler {
                         }
 
                     }
+
+
+
+                    int offLight = 50;
+                    int onLight = 1250;
+
+                    imuBlockEntity.setLight_UP(offLight);
+                    imuBlockEntity.setLight_DOWN(offLight);
+                    imuBlockEntity.setLight_FORWARD(offLight);
+                    imuBlockEntity.setLight_BACK(offLight);
+                    imuBlockEntity.setLight_RIGHT(offLight);
+                    imuBlockEntity.setLight_LEFT(offLight);
+
+                    if(targetedFace.equalsIgnoreCase("UP")) {
+                        imuBlockEntity.setLight_UP(onLight);
+                    }
+                    else if(targetedFace.equalsIgnoreCase("DOWN")) {
+                        imuBlockEntity.setLight_DOWN(onLight);
+                    }
+                    else if(targetedFace.equalsIgnoreCase("NORTH")) {
+                        imuBlockEntity.setLight_FORWARD(onLight);
+                    }
+                    else if(targetedFace.equalsIgnoreCase("SOUTH")) {
+                        imuBlockEntity.setLight_BACK(onLight);
+                    }
+                    else if(targetedFace.equalsIgnoreCase("WEST")) {
+                        imuBlockEntity.setLight_RIGHT(onLight);
+                    }
+                    else if(targetedFace.equalsIgnoreCase("EAST")) {
+                        imuBlockEntity.setLight_LEFT(onLight);
+                    }
+
+
 
                     System.out.println("Player right-clicked face: " + clickedFace + " of BlockEntity at: " + pos);
                     System.out.println("Targeted Face: " + targetedFace);
