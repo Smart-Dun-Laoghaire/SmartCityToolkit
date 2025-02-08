@@ -145,8 +145,9 @@ dependencies {
     // For more info:
     // http://www.gradle.org/docs/current/userguide/artifact_dependencies_tutorial.html
     // http://www.gradle.org/docs/current/userguide/dependency_management.html
-
+    implementation 'com.azure:azure-storage-blob:12.20.0'
     implementation('net.sf.jopt-simple:jopt-simple:5.0.4') { version { strictly '5.0.4' } }
+    implementation 'io.netty:netty-tcnative-boringssl-static:2.0.54.Final'
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

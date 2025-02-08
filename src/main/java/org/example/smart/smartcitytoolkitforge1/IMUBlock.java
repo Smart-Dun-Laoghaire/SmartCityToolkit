@@ -10,6 +10,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,12 +30,20 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.io.IOException;
 
 public class IMUBlock extends Block implements EntityBlock {
     private final Sensor linkedSensor;
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
+
+    private static final Logger LOGGER = LogManager.getLogger();
+
 
     public IMUBlock(Properties properties, Sensor sensor) {
         super(properties);
@@ -52,14 +61,15 @@ public class IMUBlock extends Block implements EntityBlock {
         builder.add(FACING);
     }
     private static Direction getNextDirection(Direction current) {
-        return switch (current) {
+        /*return switch (current) {
             case NORTH -> Direction.EAST;
             case EAST -> Direction.SOUTH;
             case SOUTH -> Direction.WEST;
             case WEST -> Direction.UP;
             case UP -> Direction.DOWN;
             case DOWN -> Direction.NORTH;
-        };
+        };*/
+        return current;
     }
     @Override
     public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random) {
@@ -69,7 +79,7 @@ public class IMUBlock extends Block implements EntityBlock {
         //conditional block logic
 
         world.setBlock(pos, state.setValue(FACING, nextFacing), 2);
-        System.out.println("Block rotated to " + nextFacing);
+        //System.out.println("Block rotated to " + nextFacing);
         world.scheduleTick(pos, this, 60);
     }
 
@@ -83,6 +93,16 @@ public class IMUBlock extends Block implements EntityBlock {
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
         return level.isClientSide ? null : (level1, pos, state1, blockEntity) -> {
             if (blockEntity instanceof IMUBlockEntity) {
+                ((IMUBlockEntity) blockEntity).setLinkedSensor((IMUSensor) linkedSensor);
+
+                try {
+                    ((IMUBlockEntity) blockEntity).getLinkedSensor().update(level1, pos);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
                 ((IMUBlockEntity) blockEntity).tick();
             }
         };
@@ -114,5 +134,8 @@ public class IMUBlock extends Block implements EntityBlock {
         }
     }
 
-
+    @Override
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.INVISIBLE;
+    }
 }

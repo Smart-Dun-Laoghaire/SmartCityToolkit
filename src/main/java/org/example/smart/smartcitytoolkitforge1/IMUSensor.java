@@ -6,6 +6,7 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.stream.JsonReader;
 import net.minecraft.core.BlockPos;
+import org.example.smart.smartcitytoolkitforge1.Azure;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -41,10 +42,7 @@ import static org.example.smart.smartcitytoolkitforge1.Smartcitytoolkitforge1.IM
 
 public class IMUSensor extends Sensor{
     // Movement-related properties
-
-    private static final HttpClient client = HttpClient.newHttpClient();
-    private static final String API_URL = "https://environmental-data-ie.spatialdynamicslab.xyz/api/v1/smart-citizen/observations";
-    private static final String API_KEY = "16759";
+    public static final Azure azure = new Azure();
     private static final Logger LOGGER = Logger.getLogger("MyMod");
 
     private float rotationX = 0;
@@ -53,9 +51,15 @@ public class IMUSensor extends Sensor{
     private float positionX = 0;
     private float positionY = 0;
     private float positionZ = 0;
-
+    private int light_UP = 0;
+    private int light_DOWN = 0;
+    private int light_FORWARD = 0;
+    private int light_BACK = 0;
+    private int light_LEFT = 0;
+    private int light_RIGHT = 0;
     public IMUSensor(BlockBehaviour.Properties properties, BlockPos location) {
         super(properties, location);
+        Sensor.all.add(this);
     }
 
     @Override
@@ -72,18 +76,30 @@ public class IMUSensor extends Sensor{
         if (world.getBlockEntity(pos) instanceof IMUBlockEntity blockEntity) {
             blockEntity.setRotation(rotationX, rotationY, rotationZ);
             blockEntity.setPosition(positionX, positionY, positionZ);
-            blockEntity.setChanged(); // Mark the block entity as dirty to save changes
+            blockEntity.setLight(light_UP, light_DOWN, light_FORWARD, light_BACK, light_LEFT, light_RIGHT);
+            blockEntity.setChanged(); // Mark the block entity as dirty to save
         }
     }
     public void fetchIMUDataFromAzure() {
-        // Simulate fetching IMU data from Azure IoT service
-        // Replace this with actual Azure IoT SDK calls
-        rotationX = (float) Math.random() * 360; // Simulated rotation X
-        rotationY = (float) Math.random() * 360; // Simulated rotation Y
-        rotationZ = (float) Math.random() * 360; // Simulated rotation Z
-        positionX = (float) Math.random() * 10;  // Simulated position X
-        positionY = (float) Math.random() * 10;  // Simulated position Y
-        positionZ = (float) Math.random() * 10;  // Simulated position Z
+
+        azure.update();
+
+        IMUData payload = azure.getData();
+
+        rotationX = payload.rotationX;
+        rotationY = payload.rotationY;
+        rotationZ = payload.rotationZ;
+
+        positionX = payload.positionX;
+        positionY = payload.positionY;
+        positionZ = payload.positionZ;
+
+        light_UP = payload.light_UP;
+        light_DOWN = payload.light_DOWN;
+        light_FORWARD = payload.light_FORWARD;
+        light_BACK = payload.light_BACK;
+        light_LEFT = payload.light_LEFT;
+        light_RIGHT = payload.light_BACK;
     }
 
     public float getRotationX() {
@@ -108,6 +124,30 @@ public class IMUSensor extends Sensor{
 
     public float getPositionZ() {
         return positionZ;
+    }
+
+    public int getLight_UP() {
+        return light_UP;
+    }
+
+    public int getLight_DOWN() {
+        return light_DOWN;
+    }
+
+    public int getLight_FORWARD() {
+        return light_FORWARD;
+    }
+
+    public int getLight_BACK() {
+        return light_BACK;
+    }
+
+    public int getLight_LEFT() {
+        return light_LEFT;
+    }
+
+    public int getLight_RIGHT() {
+        return light_RIGHT;
     }
 
     /*
