@@ -10,6 +10,7 @@ import java.util.Comparator;
 
 public class Azure {
     private final IMUData Data;
+  
     private static final String CONNECTION_STRING = "";
     private static final String CONTAINER_NAME = "imu-data";
 
@@ -33,7 +34,7 @@ public class Azure {
         Data.positionX += 0f;
         Data.positionZ += 0f;
 
-        Data.rotationX += 0.1f;
+        Data.rotationX += 0.0f;
         Data.rotationY += 0.0f;
         Data.rotationZ += 0.1f;
 
