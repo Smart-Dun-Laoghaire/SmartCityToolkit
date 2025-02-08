@@ -30,7 +30,7 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
     }
     @Override
     public void render(IMUBlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        /*poseStack.pushPose();
+        poseStack.pushPose();
 
         int blockLight = LightTexture.pack(15, 15);
 
@@ -92,7 +92,7 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
         // DOWN
         renderFaceWithTint(dispatcher, vertexConsumer, poseStack, blockEntity.getBlockState(), model, blockLight, packedOverlay, LD, Direction.DOWN);
 
-        poseStack.popPose();*/
+        poseStack.popPose();
     }
     private void renderFaceWithTint(BlockRenderDispatcher dispatcher, VertexConsumer vertexConsumer, PoseStack poseStack,
                                     BlockState state, BakedModel model, int light, int overlay,
