@@ -34,9 +34,9 @@ public class IMUBlockEntityRender implements BlockEntityRenderer<IMUBlockEntity>
 
         int blockLight = LightTexture.pack(15, 15);
 
-        float positionX = blockEntity.getPositionX();
-        float positionY = blockEntity.getPositionY();
-        float positionZ = blockEntity.getPositionZ();
+        float positionX = 0;
+        float positionY = 0;
+        float positionZ = 0;
 
         float roll = blockEntity.getRotationX();
         float pitch = blockEntity.getRotationY();
