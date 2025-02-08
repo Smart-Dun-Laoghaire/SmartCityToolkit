@@ -12,13 +12,13 @@ public class Azure {
     }
 
     public void simulateData() {
-        Data.positionY += 0.01f;
+        Data.positionY += 0.0f;
         Data.positionX += 0f;
         Data.positionZ += 0f;
 
-        Data.rotationX += 1f;
-        Data.rotationY += 1f;
-        Data.rotationZ += 1f;
+        Data.rotationX += 0.1f;
+        Data.rotationY += 0.0f;
+        Data.rotationZ += 0.1f;
 
         Data.light_UP = 135;
         Data.light_DOWN = 55;

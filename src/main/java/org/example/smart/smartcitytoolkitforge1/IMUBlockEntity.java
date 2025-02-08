@@ -212,51 +212,6 @@ public class IMUBlockEntity extends BlockEntity {
         return this.linkedSensor;
     }
 
-    int count = 0;
-
-    public void move(BlockEntity blockEntity) {
-
-
-        count++;
-        if (count % 10 == 0) {
-            if (level != null) {
-                LOGGER.info("LEVEL IS NOT NULL");
-
-
-
-                BlockPos fromPos1 = blockEntity.getBlockPos();
-                BlockPos toPos = new BlockPos(fromPos1.getX() + 1,
-                        fromPos1.getY(), fromPos1.getZ());
-
-                BlockState blockState = level.getBlockState(fromPos1);
-
-
-                if (!blockState.isAir()) {
-
-
-                    level.removeBlockEntity(fromPos1);
-                    level.removeBlock(fromPos1, false);
-
-                    level.setBlock(toPos, blockState, Block.UPDATE_ALL);
-                    level.setBlockEntity(blockEntity);
-
-
-                    /*HolderLookup.Provider lookupProvider = level.registryAccess();
-                    CompoundTag nbtData = blockEntity.saveWithFullMetadata(lookupProvider);
-
-                    level.setBlock(toPos, blockState, Block.UPDATE_ALL);
-                    BlockEntity newBlockEntity = level.getBlockEntity(toPos);
-                    if (newBlockEntity != null) {
-                        newBlockEntity.loadWithComponents(nbtData, lookupProvider);
-                    }
-
-
-                    level.sendBlockUpdated(toPos, blockState, blockState, Block.UPDATE_ALL);*/
-                }
-            }
-        }
-
-   }
 
     private void setIMUBlockEntity(BlockPos newPos) {
        if (this.level instanceof ServerLevel serverLevel) {
